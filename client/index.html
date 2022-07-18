@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Registration Page</h1>
+    <form action="">
+      <input type="text" placeholder="fastname" />
+      <input type="text" placeholder="lastname" />
+      <input type="text" placeholder="email" />
+      <input type="text" placeholder="password" />
+      <button>submit</button> <br />
+      <a href="./login.html">go to login page?</a>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <script>
+      const input = document.querySelectorAll("input");
+      const fastName = input[0];
+      const lastName = input[1];
+      const email = input[2];
+      const pass = input[3];
+      const btn = document.querySelector("button");
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const parsonObj = {
+          fastname: fastName.value,
+          lastname: lastName.value,
+          useremail: email.value,
+          password: pass.value,
+        };
+        axios
+          .post("http://localhost:2020/api/v1/signup", parsonObj)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    </script>
+  </body>
+</html>

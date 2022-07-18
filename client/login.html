@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Login Page...</h1>
+    <form action="">
+      <input type="text" placeholder="enter useremail" />
+      <input type="text" placeholder="enter password" />
+      <button>Login</button> <br />
+      <a href="./index.html">create a new account?</a>
+    </form>
+
+    <script>
+      const input = document.querySelectorAll("input");
+      const userEmail = input[0];
+      const userPass = input[1];
+      document.querySelector("button").addEventListener("click", (e) => {
+        e.preventDefault();
+        const loginInfo = {
+          useremail: userEmail.value,
+          password: userPass.value,
+        };
+        axios
+          .post("http://localhost:2020/api/v1/login", loginInfo)
+          .then((res) => {
+            if (!res) {
+            }
+            console.log(res.data.parson);
+            const parsonInfo = res.data.parson;
+            if (!localStorage.getItem("parsonInfo")) {
+              localStorage.setItem("parsonInfo", JSON.stringify(parsonInfo));
+            }
+
+            if (!localStorage.getItem("id")) {
+              localStorage.setItem("id", res.data.id);
+            }
+            if (res.status == 200) {
+              window.location = "http://localhost/raffle/home.html";
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+  </body>
+</html>

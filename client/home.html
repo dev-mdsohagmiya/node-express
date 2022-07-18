@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      nav ul li {
+        list-style-type: none;
+        margin-left: 10px;
+      }
+      .home-container {
+        margin-left: 5%;
+        margin-right: 5%;
+      }
+      .profile-pic {
+        height: 150px;
+        width: 200px;
+      }
+      .flex-container {
+        display: flex;
+      }
+      .profile {
+        flex: 1;
+      }
+      .post {
+        flex: 1;
+      }
+      .create-post {
+        display: flex;
+        justify-content: space-around;
+      }
+      .nav-box {
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Home Page...</h1>
+    <br />
+    <nav>
+      <div class="nav-box">
+        <div>
+          <ul>
+            <li><a href="./home.html">HOME</a></li>
+            <li><a href="./home.html">POST</a></li>
+            <br />
+
+            <br />
+          </ul>
+        </div>
+        <div>
+          <a class="logout-btn" href="./login.html">Logout</a>
+          <script>
+            document
+              .querySelector(".logout-btn")
+              .addEventListener("click", () => {
+                localStorage.clear();
+              });
+          </script>
+        </div>
+      </div>
+      <hr />
+    </nav>
+    <div class="home">
+      <div class="home-container">
+        <div class="flex-container">
+          <div class="profile">
+            <img
+              class="profile-pic"
+              src="./img/vecteezy_business-man-icon_.jpg"
+              alt=""
+            />
+            <h3>
+              <span>Name:</span> <small class="name-store">shohag khan</small>
+              <br />
+
+              <span>E-mail:</span>
+              <small class="email-store">shohag khan</small>
+            </h3>
+          </div>
+          <div class="post">
+            <div class="create-post">
+              <div>
+                <textarea
+                  class="inputpost"
+                  placeholder="create a new post"
+                  id=""
+                  cols="30"
+                  rows="10"
+                ></textarea>
+              </div>
+              <div>
+                <button class="post-btn">Post</button>
+              </div>
+            </div>
+            <br />
+            <hr />
+            <div class="profile-all-post"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+
+    <script>
+      const parsonInfo = JSON.parse(localStorage.getItem("parsonInfo"));
+      const { fastname, lastname, useremail } = parsonInfo;
+      document.querySelector(".name-store").innerHTML =
+        fastname + " " + lastname;
+      document.querySelector(".email-store").innerHTML = useremail;
+      //
+      const postBody = document.querySelector(".inputpost");
+      document.querySelector(".post-btn").addEventListener("click", () => {
+        console.log(postBody.value);
+        const id = localStorage.getItem("id");
+        console.log(id);
+        const post = {
+          id: id,
+          postbody: postBody.value,
+        };
+        axios
+          .post("http://localhost:2020/api/v1/userpost", { post })
+          .then((res) => {
+            document.querySelector(".profile-all-post").innerHTML = "";
+            console.log(res.data.post);
+            localStorage.setItem("profile-post", JSON.stringify(res.data.post));
+            res.data.post.forEach((value) => {
+              const postTem = `
+
+              <div class="post-post">
+                <div style="display: flex" class="post-box">
+                  <div>
+                    <img
+                      style="
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        background-color: rgb(159, 166, 172);
+                      "
+                      src="./img/vecteezy_business-man-icon_.jpg"
+                      alt=""
+                    />
+                    <br />
+                    <small>just now</small>
+                  </div>
+                  <br />
+                  <div>
+                    <h3 style="display: inline-block; margin-top: 5px">
+                      ${
+                        JSON.parse(localStorage.getItem("parsonInfo")).fastname
+                      } ${
+                JSON.parse(localStorage.getItem("parsonInfo")).lastname
+              }
+                    </h3>
+                  </div>
+                </div>
+                <div style="background-color:gray;padding:10px" class="post-body">
+                  ${value}
+                </div>
+              </div>
+              `;
+              document
+                .querySelector(".profile-all-post")
+                .insertAdjacentHTML("afterbegin", postTem);
+            });
+          });
+      });
+      const id = localStorage.getItem("id");
+      if (!localStorage.getItem("profile-post")) {
+        console.log("hello");
+        axios
+          .post("http://localhost:2020/api/v1/profile-post", {
+            message: "need response",
+            id: id,
+          })
+          .then((res) => {
+            console.log(res);
+            localStorage.setItem("profile-post", JSON.stringify(res.data.post));
+            const profilePost = localStorage.getItem("profile-post");
+
+            res.data.post.forEach((value) => {
+              const postTem = `
+
+<div class="post-post">
+<div style="display: flex" class="post-box">
+<div>
+<img
+style="
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgb(159, 166, 172);
+"
+src="./img/vecteezy_business-man-icon_.jpg"
+alt=""
+/>
+<br />
+<small>just now</small>
+</div>
+<br />
+<div>
+<h3 style="display: inline-block; margin-top: 5px">
+${JSON.parse(localStorage.getItem("parsonInfo")).fastname} ${
+                JSON.parse(localStorage.getItem("parsonInfo")).lastname
+              }
+</h3>
+</div>
+</div>
+<div style="background-color:gray;padding:10px" class="post-body">
+${value}
+</div>
+</div>
+`;
+              document
+                .querySelector(".profile-all-post")
+                .insertAdjacentHTML("afterbegin", postTem);
+            });
+          });
+      }
+      if (localStorage.getItem("profile-post")) {
+        const profilePost = localStorage.getItem("profile-post");
+
+        JSON.parse(profilePost).forEach((value) => {
+          const postTem = `
+
+<div class="post-post">
+  <div style="display: flex" class="post-box">
+    <div>
+      <img
+        style="
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background-color: rgb(159, 166, 172);
+        "
+        src="./img/vecteezy_business-man-icon_.jpg"
+        alt=""
+      />
+      <br />
+      <small>just now</small>
+    </div>
+    <br />
+    <div>
+      <h3 style="display: inline-block; margin-top: 5px">
+        ${JSON.parse(localStorage.getItem("parsonInfo")).fastname} ${
+            JSON.parse(localStorage.getItem("parsonInfo")).lastname
+          }
+      </h3>
+    </div>
+  </div>
+  <div style="background-color:gray;padding:10px" class="post-body">
+    ${value}
+  </div>
+</div>
+`;
+          document
+            .querySelector(".profile-all-post")
+            .insertAdjacentHTML("afterbegin", postTem);
+        });
+      }
+    </script>
+  </body>
+</html>
